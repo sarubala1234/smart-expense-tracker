@@ -1,0 +1,152 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<div class="main-content">
+    <h1>Expense Dashboard</h1>
+
+    <div class="dashboard">
+        <div class="dashboard-card">
+            <h3>Total Spent</h3>
+            <div class="amount">${{ total }}</div>
+        </div>
+        <div class="dashboard-card">
+            <h3>Number of Expenses</h3>
+            <div class="amount">{{ expenses|length }}</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Recent Expenses</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exp in expenses %}
+                <tr>
+                    <td>{{ exp.title }}</td>
+                    <td>{{ exp.category }}</td>
+                    <td>${{ exp.amount }}</td>
+                    <td>{{ exp.date }}</td>
+                    <td>{{ exp.notes }}</td>
+                    <td>
+                        <a href="{% url 'edit_expense' exp.id %}" class="btn">Edit</a>
+                        <a href="{% url 'delete_expense' exp.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this expense?')">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- AI Chat Assistant -->
+<div class="ai-chat">
+    <div id="ai-chat-icon" class="ai-chat-icon">💬</div>
+    <div id="ai-chat-widget" class="ai-chat-widget">
+        <div class="ai-chat-header">
+            <span>Ask AI</span>
+            <button id="close-chat" class="close-btn">&times;</button>
+        </div>
+        <div class="ai-chat-messages" id="chat-messages">
+            <div class="ai-message">Hello! How can I help you with your expenses?</div>
+        </div>
+        <div class="ai-chat-input">
+            <input type="text" id="chat-input" placeholder="Type your message..." />
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const chatIcon = document.getElementById('ai-chat-icon');
+const chatWidget = document.getElementById('ai-chat-widget');
+const closeBtn = document.getElementById('close-chat');
+const sendBtn = document.getElementById('send-btn');
+const chatInput = document.getElementById('chat-input');
+const chatMessages = document.getElementById('chat-messages');
+
+// Toggle chat widget on icon click
+chatIcon.addEventListener('click', function() {
+    chatWidget.style.display = chatWidget.style.display === 'flex' ? 'none' : 'flex';
+});
+
+// Close chat widget on close button click
+closeBtn.addEventListener('click', function() {
+    chatWidget.style.display = 'none';
+    chatMessages.innerHTML = '<div class="ai-message">Hello! How can I help you with your expenses?</div>';
+});
+
+// Send message on button click
+sendBtn.addEventListener('click', function() {
+    sendMessage();
+});
+
+// Send message on Enter key
+chatInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+
+function sendMessage() {
+    const message = chatInput.value.trim();
+    if (message) {
+        const userMessage = document.createElement('div');
+        userMessage.className = 'user-message';
+        userMessage.textContent = message;
+        chatMessages.appendChild(userMessage);
+        chatInput.value = '';
+
+        // Send AJAX request to backend
+        fetch('/ai-chat/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token if needed
+            },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const aiMessage = document.createElement('div');
+            aiMessage.className = 'ai-message';
+            aiMessage.textContent = data.response;
+            chatMessages.appendChild(aiMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const aiMessage = document.createElement('div');
+            aiMessage.className = 'ai-message';
+            aiMessage.textContent = 'Sorry, I couldn\'t process your request.';
+            chatMessages.appendChild(aiMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    }
+}
+
+// Function to get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

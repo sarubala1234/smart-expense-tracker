@@ -14,10 +14,7 @@ from pathlib import Path
 import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Add the parent directory to sys.path to import smart_trackerapp
-sys.path.append(str(BASE_DIR.parent))
+BASE_DIR = Path(__file__).resolve().parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -54,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'smart_tracker.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -68,11 +65,14 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.static',
             ],
+            'builtins': [
+                'django.templatetags.static',
+            ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'smart_tracker.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 
 # Database
