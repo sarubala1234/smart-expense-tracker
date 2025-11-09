@@ -7,9 +7,9 @@ BASE_DIR = Path(__file__).resolve().parent
 SECRET_KEY = "$34@=f#8w1$d242deii6+(xkn#on3y7b(v16(=7+x&yc+h57he)"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["https://smart-expense-tracker-r7le.onrender.com"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -51,7 +51,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = 'smart_tracker.wsgi.application'
 
 # Database
 DATABASES = {

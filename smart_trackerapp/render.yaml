@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: smart-expense-tracker
+    env: python
+    region: india
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn smart_tracker.wsgi:application
