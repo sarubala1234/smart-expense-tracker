@@ -4,5 +4,5 @@ services:
     env: python
     region: india
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
     startCommand: gunicorn smart_tracker.wsgi:application
