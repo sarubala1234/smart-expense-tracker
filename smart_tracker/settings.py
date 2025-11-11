@@ -9,8 +9,10 @@ SECRET_KEY = "$34@=f#8w1$d242deii6+(xkn#on3y7b(v16(=7+x&yc+h57he)"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+WSGI_APPLICATION = 'smart_tracker.wsgi.application'
+ALLOWED_HOSTS = ['*']
 
-ALLOWED_HOSTS = ["smart-tracker.onrender.com", "localhost", "127.0.0.1"]
+
 
 # Application definition
 INSTALLED_APPS = [
