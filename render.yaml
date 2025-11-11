@@ -1,8 +1,9 @@
 services:
   - type: web
-    name: smart-tracker
+    name: smart-expense-tracker
     env: python
-    region: india
-    plan: free
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
-    startCommand: gunicorn smart_tracker.wsgi:application
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn smart_tracker.wsgi --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: smart_tracker.settings
